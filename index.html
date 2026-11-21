@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-iJtPvsMy7SCV/LWcnEBi6jcMDEpCLCp6VDl6eCTQ0dQ='; style-src 'unsafe-inline'; media-src blob:; img-src data:; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MP3 時間軸書籤播放器 v1.4</title>
+  <style>
+*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.right-3{right:.75rem}.right-4{right:1rem}.top-1\/2{top:50%}.top-4{top:1rem}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.my-3{margin-top:.75rem;margin-bottom:.75rem}.-mt-2{margin-top:-.5rem}.mb-1{margin-bottom:.25rem}.mb-1\.5{margin-bottom:.375rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.block{display:block}.flex{display:flex}.hidden{display:none}.h-24{height:6rem}.max-h-96{max-height:24rem}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-0{min-width:0}.max-w-3xl{max-width:48rem}.max-w-xs{max-width:20rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-translate-y-1\/2{--tw-translate-y:-50%}.-translate-y-1\/2,.translate-y-0{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.translate-y-0{--tw-translate-y:0px}.translate-y-\[-150\%\]{--tw-translate-y:-150%}.transform,.translate-y-\[-150\%\]{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.touch-none{touch-action:none}.select-none{-webkit-user-select:none;-moz-user-select:none;user-select:none}.resize{resize:both}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-2\.5{gap:.625rem}.gap-3{gap:.75rem}.gap-x-4{-moz-column-gap:1rem;column-gap:1rem}.gap-y-2{row-gap:.5rem}.space-y-5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem*var(--tw-space-y-reverse))}.divide-y>:not([hidden])~:not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px*(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px*var(--tw-divide-y-reverse))}.divide-slate-100>:not([hidden])~:not([hidden]){--tw-divide-opacity:1;border-color:rgb(241 245 249/var(--tw-divide-opacity,1))}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-amber-200{--tw-border-opacity:1;border-color:rgb(253 230 138/var(--tw-border-opacity,1))}.border-blue-200{--tw-border-opacity:1;border-color:rgb(191 219 254/var(--tw-border-opacity,1))}.border-blue-400{--tw-border-opacity:1;border-color:rgb(96 165 250/var(--tw-border-opacity,1))}.border-red-200{--tw-border-opacity:1;border-color:rgb(254 202 202/var(--tw-border-opacity,1))}.border-red-600{--tw-border-opacity:1;border-color:rgb(220 38 38/var(--tw-border-opacity,1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity,1))}.border-slate-200\/80{border-color:rgba(226,232,240,.8)}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225/var(--tw-border-opacity,1))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235/var(--tw-bg-opacity,1))}.bg-blue-100{--tw-bg-opacity:1;background-color:rgb(219 234 254/var(--tw-bg-opacity,1))}.bg-blue-50{--tw-bg-opacity:1;background-color:rgb(239 246 255/var(--tw-bg-opacity,1))}.bg-blue-600{--tw-bg-opacity:1;background-color:rgb(37 99 235/var(--tw-bg-opacity,1))}.bg-red-600{--tw-bg-opacity:1;background-color:rgb(220 38 38/var(--tw-bg-opacity,1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240/var(--tw-bg-opacity,1))}.bg-slate-200\/60{background-color:rgba(226,232,240,.6)}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.p-1{padding:.25rem}.p-1\.5{padding:.375rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.px-1\.5{padding-left:.375rem;padding-right:.375rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pl-3\.5{padding-left:.875rem}.pr-1{padding-right:.25rem}.pr-20{padding-right:5rem}.pt-2{padding-top:.5rem}.text-center{text-align:center}.font-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[11px\]{font-size:11px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.text-amber-800{--tw-text-opacity:1;color:rgb(146 64 14/var(--tw-text-opacity,1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235/var(--tw-text-opacity,1))}.text-blue-700{--tw-text-opacity:1;color:rgb(29 78 216/var(--tw-text-opacity,1))}.text-red-600{--tw-text-opacity:1;color:rgb(220 38 38/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59/var(--tw-text-opacity,1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42/var(--tw-text-opacity,1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.opacity-0{opacity:0}.opacity-100{opacity:1}.shadow-lg{--tw-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color),0 4px 6px -4px var(--tw-shadow-color)}.shadow-lg,.shadow-sm{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color)}.outline-none{outline:2px solid transparent;outline-offset:2px}.blur{--tw-blur:blur(8px)}.blur,.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-300{transition-duration:.3s}.hover\:bg-blue-600:hover{--tw-bg-opacity:1;background-color:rgb(37 99 235/var(--tw-bg-opacity,1))}.hover\:bg-blue-700:hover{--tw-bg-opacity:1;background-color:rgb(29 78 216/var(--tw-bg-opacity,1))}.hover\:bg-red-50:hover{--tw-bg-opacity:1;background-color:rgb(254 242 242/var(--tw-bg-opacity,1))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1))}.hover\:bg-slate-200\/70:hover{background-color:rgba(226,232,240,.7)}.hover\:bg-slate-300:hover{--tw-bg-opacity:1;background-color:rgb(203 213 225/var(--tw-bg-opacity,1))}.hover\:bg-slate-50:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.hover\:bg-slate-900:hover{--tw-bg-opacity:1;background-color:rgb(15 23 42/var(--tw-bg-opacity,1))}.hover\:bg-white:hover{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.hover\:text-blue-600:hover{--tw-text-opacity:1;color:rgb(37 99 235/var(--tw-text-opacity,1))}.hover\:text-red-600:hover{--tw-text-opacity:1;color:rgb(220 38 38/var(--tw-text-opacity,1))}.hover\:text-slate-700:hover{--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.focus\:border-blue-500:focus{--tw-border-opacity:1;border-color:rgb(59 130 246/var(--tw-border-opacity,1))}.focus\:bg-white:focus{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus\:ring-blue-500\/30:focus{--tw-ring-color:rgba(59,130,246,.3)}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width:640px){.sm\:inline-block{display:inline-block}.sm\:max-w-md{max-width:28rem}.sm\:flex-row{flex-direction:row}.sm\:p-6{padding:1.5rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}}
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+    }
+    /* 自訂捲軸樣式 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen py-6 px-4 sm:px-6">
+
+  <!-- 頂部浮動通知訊息 -->
+  <div id="toast" role="status" aria-live="polite" class="fixed top-4 right-4 z-50 transform transition-all duration-300 translate-y-[-150%] opacity-0 bg-slate-800 text-white px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2">
+    <span id="toastIcon">ℹ️</span>
+    <span id="toastMsg">通知訊息</span>
+  </div>
+
+  <div class="max-w-3xl mx-auto space-y-5">
+
+    <!-- 播放器卡片 -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+      <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <span>🎧 MP3 時間軸書籤播放器</span>
+        </h1>
+        <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-3 py-1 rounded-full">v1.4 音波版</span>
+      </div>
+
+      <!-- 檔案選擇區 -->
+      <div class="flex flex-wrap items-center gap-3 mb-4 p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+        <label class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm">
+          📂 選擇音訊檔案
+          <input type="file" id="audioFile" accept="audio/*" class="hidden">
+        </label>
+        <span id="fileNameDisplay" class="text-sm text-slate-500 truncate max-w-xs sm:max-w-md">
+          尚未選擇音訊檔案（支援 MP3, WAV, M4A, OGG）
+        </span>
+      </div>
+      <p id="restoreHint" class="hidden -mt-2 mb-3 px-3 py-2 text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg"></p>
+
+      <audio id="player" controls class="w-full my-3 rounded-lg outline-none"></audio>
+
+      <!-- 音波條 -->
+      <div id="waveWrap" class="hidden mb-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+          <span id="waveStatus" class="text-xs text-slate-500"></span>
+          <div class="flex items-center gap-1 text-xs text-slate-500 bg-slate-100 p-1 rounded-lg">
+            <span class="px-1.5 font-medium">縮放:</span>
+            <button type="button" data-action="zoom" data-zoom="0" class="zoom-btn px-2 py-1 rounded bg-white text-blue-600 font-bold shadow-sm transition">全覽</button>
+            <button type="button" data-action="zoom" data-zoom="60" class="zoom-btn px-2 py-1 rounded hover:bg-white transition">60秒</button>
+            <button type="button" data-action="zoom" data-zoom="20" class="zoom-btn px-2 py-1 rounded hover:bg-white transition">20秒</button>
+            <button type="button" data-action="zoom" data-zoom="5" class="zoom-btn px-2 py-1 rounded hover:bg-white transition">5秒</button>
+          </div>
+        </div>
+        <canvas id="wave" aria-label="音波圖，點擊或拖曳可跳轉播放位置" class="block w-full h-24 rounded-lg bg-slate-50 border border-slate-200 touch-none select-none cursor-pointer"></canvas>
+      </div>
+
+      <!-- 控制按鈕列 -->
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" data-action="skip" data-sec="-5" class="px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium transition active:scale-95">
+            ⏪ -5秒
+          </button>
+          <button type="button" data-action="toggle" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-sm font-medium transition active:scale-95 shadow-sm">
+            ⏯ 播放 / 暫停
+          </button>
+          <button type="button" data-action="skip" data-sec="5" class="px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium transition active:scale-95">
+            ⏩ +5秒
+          </button>
+          <button type="button" data-action="quick-bookmark" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition active:scale-95 shadow-sm">
+            🔖 新增書籤 (B)
+          </button>
+        </div>
+
+        <!-- 語速調整 -->
+        <div class="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-100 p-1 rounded-lg">
+          <span class="px-1.5 font-medium">語速:</span>
+          <button type="button" data-action="speed" data-speed="0.75" class="speed-btn px-2 py-1 rounded hover:bg-white transition">0.75x</button>
+          <button type="button" data-action="speed" data-speed="1" class="speed-btn px-2 py-1 rounded bg-white text-blue-600 font-bold shadow-sm transition">1.0x</button>
+          <button type="button" data-action="speed" data-speed="1.25" class="speed-btn px-2 py-1 rounded hover:bg-white transition">1.25x</button>
+          <button type="button" data-action="speed" data-speed="1.5" class="speed-btn px-2 py-1 rounded hover:bg-white transition">1.5x</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 書籤管理卡片 -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+      <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-bold text-slate-800">時間點書籤清單</h2>
+          <span id="bmCount" class="text-xs font-bold bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full">0</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" data-action="export" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition">
+            💾 匯出 JSON
+          </button>
+          <button type="button" data-action="import" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition">
+            📂 匯入 JSON
+          </button>
+          <input type="file" id="importFile" accept=".json,application/json" class="hidden">
+          <button type="button" id="clearBtn" data-action="clear" class="px-3 py-1.5 bg-white hover:bg-red-50 border border-red-200 text-red-600 rounded-lg text-xs font-medium transition">
+            🗑️ 清空
+          </button>
+        </div>
+      </div>
+
+      <!-- 新增書籤輸入列 -->
+      <div class="flex flex-col sm:flex-row gap-2 mb-4">
+        <div class="relative flex-1">
+          <input type="text" id="noteInput" maxlength="500" placeholder="輸入書籤備註（例如：重點段落、副歌開始），按 Enter 標記..."
+            class="w-full pl-3.5 pr-20 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition">
+          <span id="liveTimeBadge" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+            00:00.0
+          </span>
+        </div>
+        <button type="button" data-action="add-from-input" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition shrink-0 shadow-sm">
+          ＋ 標記目前時間
+        </button>
+      </div>
+
+      <ul id="bookmarkList" class="divide-y divide-slate-100 max-h-96 overflow-y-auto pr-1"></ul>
+
+      <div id="emptyState" class="text-center py-10 text-slate-400 text-sm">
+        <p class="text-2xl mb-1">🔖</p>
+        <p>目前尚無書籤，載入音訊後可隨時按 <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-xs text-slate-600">B</kbd> 鍵或點擊上方按鈕標記時間點！</p>
+      </div>
+    </div>
+
+    <!-- 快捷鍵說明區 -->
+    <div class="bg-slate-200/60 border border-slate-200/80 rounded-xl p-4 text-xs text-slate-600 leading-relaxed">
+      <div class="font-semibold text-slate-700 mb-1.5">⌨️ 鍵盤快捷鍵操作指南（未聚焦於文字輸入框時生效）：</div>
+      <div class="flex flex-wrap gap-x-4 gap-y-2">
+        <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">Space</kbd> 播放 / 暫停</span>
+        <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">←</kbd> / <kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">→</kbd> 後退 / 前進 5 秒</span>
+        <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">B</kbd> 暫停並聚焦輸入書籤</span>
+        <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">M</kbd> 靜音切換</span>
+        <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">Z</kbd> 切換音波縮放</span>
+        <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">1</kbd>～<kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">9</kbd> 跳轉至對應編號書籤</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    'use strict';
+
+    // 匯入限制
+    const MAX_IMPORT_BYTES = 1024 * 1024; // 1 MB
+    const MAX_BOOKMARKS = 5000;
+    const MAX_NOTE_LENGTH = 500;
+
+    const $ = (id) => document.getElementById(id);
+    const player = $('player');
+    const audioFileInput = $('audioFile');
+    const importFileInput = $('importFile');
+    const fileNameDisplay = $('fileNameDisplay');
+    const noteInput = $('noteInput');
+    const liveTimeBadge = $('liveTimeBadge');
+    const bookmarkList = $('bookmarkList');
+    const emptyState = $('emptyState');
+    const bmCount = $('bmCount');
+    const clearBtn = $('clearBtn');
+
+    let bookmarks = [];
+    let currentAudioName = 'untitled';
+    let currentAudioUrl = null;
+    let editingId = null;
+    let clearConfirmTimer = null;
+    let toastTimer = null;
+    let nextId = 1;
+
+    function hasAudio() {
+      return currentAudioUrl !== null;
+    }
+
+    // ---- 裝置端自動儲存（localStorage，資料只留在本機瀏覽器） ----
+    const STORE_PREFIX = 'mp3bm:v1:file:';
+    const INDEX_KEY = 'mp3bm:v1:index';
+    const MAX_STORED_FILES = 30;
+    const restoreHint = $('restoreHint');
+    let currentKey = null;      // 目前音訊檔的儲存鍵（檔名 + 大小）
+    let pendingSeek = null;     // 載入後要還原的播放位置
+    let lastPositionSave = 0;
+    let storageWarned = false;
+
+    function storageGet(key) {
+      try { return localStorage.getItem(key); } catch { return null; }
+    }
+    function storageSet(key, value) {
+      try { localStorage.setItem(key, value); return true; } catch { return false; }
+    }
+    function storageRemove(key) {
+      try { localStorage.removeItem(key); } catch { /* 忽略 */ }
+    }
+
+    function readIndex() {
+      try {
+        const list = JSON.parse(storageGet(INDEX_KEY) || '[]');
+        return Array.isArray(list)
+          ? list.filter((e) => e && typeof e.key === 'string' && typeof e.name === 'string')
+          : [];
+      } catch { return []; }
+    }
+
+    // 將外部來源（匯入檔或儲存資料）的書籤清單整理成安全格式
+    function sanitizeList(list) {
+      return list
+        .slice(0, MAX_BOOKMARKS)
+        .filter((item) => item && typeof item === 'object')
+        .map((item) => {
+          const t = Number(item.time);
+          return {
+            id: nextId++,
+            time: Number.isFinite(t) && t >= 0 ? t : 0,
+            note: String(item.note ?? '').trim().slice(0, MAX_NOTE_LENGTH) || '未命名書籤'
+          };
+        })
+        .sort((a, b) => a.time - b.time);
+    }
+
+    function loadSaved(key) {
+      try {
+        const data = JSON.parse(storageGet(STORE_PREFIX + key));
+        if (!data || !Array.isArray(data.bookmarks)) return null;
+        const t = Number(data.lastTime);
+        return { bookmarks: sanitizeList(data.bookmarks), lastTime: Number.isFinite(t) && t > 0 ? t : 0 };
+      } catch { return null; }
+    }
+
+    function saveState() {
+      if (!currentKey) return;
+      const now = Date.now();
+      const ok = storageSet(STORE_PREFIX + currentKey, JSON.stringify({
+        name: currentAudioName,
+        updatedAt: now,
+        // 還原中（尚未跳到上次位置）時保留原本的位置，避免被 0 覆蓋
+        lastTime: pendingSeek ?? (Number.isFinite(player.currentTime) ? player.currentTime : 0),
+        bookmarks: bookmarks.map(({ time, note }) => ({ time, note }))
+      }));
+      if (!ok) {
+        if (!storageWarned) {
+          storageWarned = true;
+          showToast('無法自動儲存（瀏覽器停用儲存或空間不足），請記得匯出 JSON', '⚠️');
+        }
+        return;
+      }
+      // 更新索引；超過上限時移除最久未使用的檔案
+      const index = readIndex().filter((e) => e.key !== currentKey);
+      index.unshift({ key: currentKey, name: currentAudioName, count: bookmarks.length, updatedAt: now });
+      index.splice(MAX_STORED_FILES).forEach((e) => storageRemove(STORE_PREFIX + e.key));
+      storageSet(INDEX_KEY, JSON.stringify(index));
+    }
+
+    function showRestoreHint() {
+      const last = readIndex()[0];
+      if (!last) return;
+      restoreHint.textContent = `💡 上次使用：${last.name}（${Number(last.count) || 0} 個書籤）— 重新選擇同一個檔案即可還原書籤與播放位置`;
+      restoreHint.classList.remove('hidden');
+    }
+
+    function showToast(message, icon = 'ℹ️') {
+      const toast = $('toast');
+      $('toastMsg').textContent = message;
+      $('toastIcon').textContent = icon;
+      toast.classList.remove('translate-y-[-150%]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-[-150%]', 'opacity-0');
+      }, 2800);
+    }
+
+    // 載入本機音訊檔案（換檔時釋放舊的 blob URL）
+    audioFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // 先把上一個檔案的狀態（含播放位置）存起來
+      const hadAudio = hasAudio();
+      if (hadAudio) saveState();
+
+      if (currentAudioUrl) URL.revokeObjectURL(currentAudioUrl);
+      currentAudioUrl = URL.createObjectURL(file);
+
+      currentAudioName = file.name.replace(/\.[^/.]+$/, '');
+      currentKey = `${file.name}|${file.size}`;
+      fileNameDisplay.textContent = file.name;
+      fileNameDisplay.classList.replace('text-slate-500', 'text-slate-800');
+      fileNameDisplay.classList.add('font-medium');
+      restoreHint.classList.add('hidden');
+
+      const saved = loadSaved(currentKey);
+      pendingSeek = null;
+      if (saved) {
+        bookmarks = saved.bookmarks;
+        pendingSeek = saved.lastTime || null;
+      } else if (hadAudio) {
+        bookmarks = []; // 換成沒有存檔的新檔案：從空白開始
+      } // 尚未載入過音訊（例如先匯入了 JSON）：保留目前書籤並存到這個檔案
+      editingId = null;
+      resetClearBtn();
+
+      player.src = currentAudioUrl;
+      player.load();
+      renderBookmarks();
+      startWaveform(file);
+
+      if (saved) {
+        const pos = pendingSeek ? `，從 ${formatTime(pendingSeek)} 繼續` : '';
+        showToast(`已還原 ${bookmarks.length} 個書籤${pos}`, '♻️');
+      } else {
+        showToast(`已載入音訊：${file.name}`, '🎵');
+      }
+    });
+
+    // 還原上次的播放位置
+    player.addEventListener('loadedmetadata', () => {
+      if (pendingSeek && pendingSeek < (player.duration || 0) - 1) {
+        player.currentTime = pendingSeek;
+      }
+      pendingSeek = null;
+    });
+
+    player.addEventListener('timeupdate', () => {
+      liveTimeBadge.textContent = formatTime(player.currentTime);
+      // 播放中每 3 秒記錄一次位置
+      if (!player.paused && Date.now() - lastPositionSave > 3000) {
+        lastPositionSave = Date.now();
+        saveState();
+      }
+    });
+
+    player.addEventListener('pause', saveState);
+    player.addEventListener('seeked', saveState);
+    // 手機切到背景或關閉分頁時立即儲存
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') saveState();
+    });
+    window.addEventListener('pagehide', saveState);
+
+    function formatTime(sec) {
+      if (!Number.isFinite(sec)) return '00:00.0';
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = Math.floor(sec % 60);
+      const ms = Math.floor((sec % 1) * 10);
+      const pad = (n) => String(n).padStart(2, '0');
+      return h > 0 ? `${h}:${pad(m)}:${pad(s)}.${ms}` : `${pad(m)}:${pad(s)}.${ms}`;
+    }
+
+    function togglePlay() {
+      if (!hasAudio()) {
+        showToast('請先選擇音訊檔案！', '⚠️');
+        return;
+      }
+      if (player.paused) {
+        player.play().catch(() => showToast('無法播放此音訊檔案', '❌'));
+      } else {
+        player.pause();
+      }
+    }
+
+    function skip(seconds) {
+      if (!hasAudio()) return;
+      player.currentTime = Math.max(0, Math.min(player.duration || 0, player.currentTime + seconds));
+    }
+
+    function setSpeed(rate) {
+      player.playbackRate = rate;
+      document.querySelectorAll('.speed-btn').forEach((btn) => {
+        btn.className = parseFloat(btn.dataset.speed) === rate
+          ? 'speed-btn px-2 py-1 rounded bg-white text-blue-600 font-bold shadow-sm transition'
+          : 'speed-btn px-2 py-1 rounded hover:bg-white transition';
+      });
+      showToast(`播放速度已設為 ${rate}x`, '⚡');
+    }
+
+    function addBookmark(noteText = '') {
+      if (!hasAudio()) {
+        showToast('請先載入音訊檔案再新增書籤！', '⚠️');
+        return;
+      }
+      if (bookmarks.length >= MAX_BOOKMARKS) {
+        showToast(`書籤數量已達上限 ${MAX_BOOKMARKS} 筆`, '⚠️');
+        return;
+      }
+      const time = player.currentTime;
+      bookmarks.push({
+        id: nextId++,
+        time,
+        note: noteText.trim().slice(0, MAX_NOTE_LENGTH) || `標記點 ${bookmarks.length + 1}`
+      });
+      bookmarks.sort((a, b) => a.time - b.time);
+      renderBookmarks();
+      showToast(`已新增書籤 (${formatTime(time)})`, '🔖');
+    }
+
+    function addBookmarkFromInput() {
+      addBookmark(noteInput.value);
+      noteInput.value = '';
+      noteInput.blur();
+    }
+
+    function quickFocusBookmark() {
+      if (!hasAudio()) {
+        showToast('請先載入音訊檔案！', '⚠️');
+        return;
+      }
+      player.pause();
+      noteInput.focus();
+      showToast(`已於 ${formatTime(player.currentTime)} 暫停，請輸入備註後按 Enter`, '✍️');
+    }
+
+    function jumpTo(time) {
+      if (!hasAudio() || !Number.isFinite(time)) return;
+      player.currentTime = time;
+      player.play().catch(() => {});
+    }
+
+    function findBookmark(id) {
+      return bookmarks.find((b) => b.id === id);
+    }
+
+    function startEdit(id) {
+      editingId = id;
+      renderBookmarks();
+      const inputEl = bookmarkList.querySelector('input[data-role="edit-input"]');
+      if (inputEl) {
+        inputEl.focus();
+        inputEl.select();
+      }
+    }
+
+    function saveEdit(id) {
+      const inputEl = bookmarkList.querySelector('input[data-role="edit-input"]');
+      const bm = findBookmark(id);
+      if (inputEl && bm && inputEl.value.trim() !== '') {
+        bm.note = inputEl.value.trim().slice(0, MAX_NOTE_LENGTH);
+      }
+      editingId = null;
+      renderBookmarks();
+    }
+
+    function cancelEdit() {
+      editingId = null;
+      renderBookmarks();
+    }
+
+    function deleteBookmark(id) {
+      bookmarks = bookmarks.filter((b) => b.id !== id);
+      if (editingId === id) editingId = null;
+      renderBookmarks();
+      showToast('已刪除書籤', '🗑️');
+    }
+
+    // 二段式確認清空
+    function handleClearClick() {
+      if (bookmarks.length === 0) return;
+      if (clearBtn.dataset.confirm === 'true') {
+        bookmarks = [];
+        editingId = null;
+        renderBookmarks();
+        resetClearBtn();
+        showToast('已清空所有書籤', '🧹');
+      } else {
+        clearBtn.dataset.confirm = 'true';
+        clearBtn.textContent = '⚠️ 確定清空？';
+        clearBtn.classList.add('bg-red-600', 'text-white', 'border-red-600');
+        clearBtn.classList.remove('bg-white', 'text-red-600');
+        clearConfirmTimer = setTimeout(resetClearBtn, 3000);
+      }
+    }
+
+    function resetClearBtn() {
+      clearTimeout(clearConfirmTimer);
+      clearBtn.dataset.confirm = 'false';
+      clearBtn.textContent = '🗑️ 清空';
+      clearBtn.classList.remove('bg-red-600', 'text-white', 'border-red-600');
+      clearBtn.classList.add('bg-white', 'text-red-600');
+    }
+
+    // 以 DOM API 建立元素：使用者文字一律走 textContent / value，不經過 innerHTML
+    function el(tag, className, props = {}) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      for (const [k, v] of Object.entries(props)) {
+        if (k === 'text') node.textContent = v;
+        else if (k === 'dataset') Object.assign(node.dataset, v);
+        else node[k] = v;
+      }
+      return node;
+    }
+
+    function renderBookmarks() {
+      saveState(); // 每次書籤變動都會重新渲染，順便自動儲存
+      requestDraw(); // 更新音波上的書籤標記
+      bmCount.textContent = String(bookmarks.length);
+      bookmarkList.replaceChildren();
+
+      if (bookmarks.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      const frag = document.createDocumentFragment();
+      bookmarks.forEach((bm, index) => {
+        const li = el('li', 'flex items-center justify-between gap-2.5 py-2.5 px-2 hover:bg-slate-50 rounded-lg transition group', {
+          dataset: { id: String(bm.id) }
+        });
+
+        if (editingId === bm.id) {
+          const left = el('div', 'flex items-center gap-2 flex-1');
+          left.append(
+            el('span', 'font-mono text-xs font-bold bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1.5 rounded-lg shrink-0', { text: formatTime(bm.time) }),
+            el('input', 'flex-1 px-2.5 py-1 text-sm border border-blue-400 rounded-lg focus:outline-none', {
+              type: 'text', value: bm.note, maxLength: MAX_NOTE_LENGTH, dataset: { role: 'edit-input' }
+            })
+          );
+          const right = el('div', 'flex items-center gap-1 shrink-0');
+          right.append(
+            el('button', 'px-2.5 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700', { type: 'button', text: '儲存', dataset: { action: 'save-edit' } }),
+            el('button', 'px-2.5 py-1 bg-slate-200 text-slate-700 text-xs rounded-lg hover:bg-slate-300', { type: 'button', text: '取消', dataset: { action: 'cancel-edit' } })
+          );
+          li.append(left, right);
+        } else {
+          const left = el('div', 'flex items-center gap-3 flex-1 min-w-0');
+          left.append(
+            el('button', 'font-mono text-xs font-bold bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white border border-blue-200 px-2.5 py-1.5 rounded-lg transition shrink-0 cursor-pointer', {
+              type: 'button', title: '點擊跳轉至此時間點', text: formatTime(bm.time), dataset: { action: 'jump' }
+            }),
+            el('span', 'text-sm text-slate-700 truncate cursor-pointer hover:text-blue-600 transition flex-1', {
+              title: bm.note, text: bm.note, dataset: { action: 'jump' }
+            })
+          );
+          const right = el('div', 'flex items-center gap-1.5 shrink-0');
+          if (index < 9) {
+            right.append(el('span', 'hidden sm:inline-block text-[11px] font-mono text-slate-400 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded shrink-0', { text: `鍵 ${index + 1}` }));
+          }
+          right.append(
+            el('button', 'p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 rounded-lg transition', { type: 'button', title: '編輯備註', text: '✏️', dataset: { action: 'edit' } }),
+            el('button', 'p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition', { type: 'button', title: '刪除書籤', text: '🗑️', dataset: { action: 'delete' } })
+          );
+          li.append(left, right);
+        }
+        frag.append(li);
+      });
+      bookmarkList.append(frag);
+    }
+
+    // 匯出書籤（下載後釋放 blob URL）
+    function exportBookmarks() {
+      if (bookmarks.length === 0) {
+        showToast('目前沒有書籤可以匯出', '⚠️');
+        return;
+      }
+      const data = {
+        audioFile: currentAudioName,
+        exportedAt: new Date().toISOString(),
+        bookmarks: bookmarks.map(({ time, note }) => ({ time, note }))
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${currentAudioName.replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_')}_書籤.json`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast('已匯出 JSON 書籤檔', '💾');
+    }
+
+    // 匯入書籤：限制檔案大小、筆數、備註長度，並過濾不合法的時間
+    function importBookmarks(event) {
+      const input = event.target;
+      const file = input.files[0];
+      input.value = '';
+      if (!file) return;
+      if (file.size > MAX_IMPORT_BYTES) {
+        showToast('檔案超過 1 MB，無法匯入', '❌');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          const list = Array.isArray(parsed) ? parsed : parsed && parsed.bookmarks;
+          if (!Array.isArray(list)) throw new Error('格式錯誤');
+          if (list.length > MAX_BOOKMARKS) throw new Error('筆數過多');
+
+          bookmarks = sanitizeList(list);
+          editingId = null;
+          renderBookmarks();
+          showToast(`成功匯入 ${bookmarks.length} 個書籤！`, '📂');
+        } catch (err) {
+          showToast(err.message === '筆數過多'
+            ? `書籤超過 ${MAX_BOOKMARKS} 筆，無法匯入！`
+            : 'JSON 檔案格式不正確，無法匯入！', '❌');
+        }
+      };
+      reader.onerror = () => showToast('讀取檔案失敗', '❌');
+      reader.readAsText(file);
+    }
+
+    // ---- 事件綁定（不使用行內 onclick，以便套用嚴格 CSP） ----
+
+    importFileInput.addEventListener('change', importBookmarks);
+
+    // 頁面上的固定按鈕
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn || bookmarkList.contains(btn)) return;
+      switch (btn.dataset.action) {
+        case 'skip': skip(Number(btn.dataset.sec)); break;
+        case 'toggle': togglePlay(); break;
+        case 'quick-bookmark': quickFocusBookmark(); break;
+        case 'speed': setSpeed(Number(btn.dataset.speed)); break;
+        case 'export': exportBookmarks(); break;
+        case 'import': importFileInput.click(); break;
+        case 'clear': handleClearClick(); break;
+        case 'add-from-input': addBookmarkFromInput(); break;
+        case 'zoom': setWaveZoom(Number(btn.dataset.zoom)); break;
+      }
+    });
+
+    // 書籤列表（事件委派）
+    bookmarkList.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-action]');
+      const li = e.target.closest('li[data-id]');
+      if (!target || !li) return;
+      const id = Number(li.dataset.id);
+      const bm = findBookmark(id);
+      if (!bm) return;
+      switch (target.dataset.action) {
+        case 'jump': jumpTo(bm.time); break;
+        case 'edit': startEdit(id); break;
+        case 'delete': deleteBookmark(id); break;
+        case 'save-edit': saveEdit(id); break;
+        case 'cancel-edit': cancelEdit(); break;
+      }
+    });
+
+    bookmarkList.addEventListener('keydown', (e) => {
+      if (!e.target.matches('input[data-role="edit-input"]')) return;
+      const li = e.target.closest('li[data-id]');
+      if (!li) return;
+      if (e.key === 'Enter') { e.preventDefault(); saveEdit(Number(li.dataset.id)); }
+      else if (e.key === 'Escape') { e.preventDefault(); cancelEdit(); }
+    });
+
+    noteInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addBookmarkFromInput();
+      } else if (e.key === 'Escape') {
+        noteInput.blur();
+      }
+    });
+
+    // 全域鍵盤快捷鍵
+    document.addEventListener('keydown', (e) => {
+      const active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      // 焦點在音訊控制條上時，Space 與方向鍵交給瀏覽器原生處理，避免重複觸發
+      const onPlayer = active === player;
+
+      if (e.code === 'Space') {
+        if (onPlayer) return;
+        e.preventDefault();
+        togglePlay();
+      } else if (e.code === 'ArrowLeft') {
+        if (onPlayer) return;
+        e.preventDefault();
+        skip(-5);
+      } else if (e.code === 'ArrowRight') {
+        if (onPlayer) return;
+        e.preventDefault();
+        skip(5);
+      } else if (e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        quickFocusBookmark();
+      } else if (e.key.toLowerCase() === 'z') {
+        const levels = WAVE_ZOOM_LEVELS;
+        setWaveZoom(levels[(levels.indexOf(waveZoom) + 1) % levels.length]);
+      } else if (e.key.toLowerCase() === 'm') {
+        player.muted = !player.muted;
+        showToast(player.muted ? '已靜音' : '已取消靜音', player.muted ? '🔇' : '🔊');
+      } else if (e.key >= '1' && e.key <= '9' && e.key.length === 1) {
+        const idx = parseInt(e.key, 10) - 1;
+        if (bookmarks[idx]) {
+          e.preventDefault();
+          jumpTo(bookmarks[idx].time);
+        }
+      }
+    });
+
+    // ---- 音波條 ----
+    const WAVE_PEAKS_PER_SEC = 100;                       // 每秒取樣幾個峰值
+    const WAVE_MAX_FILE_BYTES = 150 * 1024 * 1024;        // 超過不分析，避免吃光記憶體
+    const IS_TOUCH = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+    const WAVE_MAX_SECONDS = (IS_TOUCH ? 45 : 90) * 60;   // 手機解碼長音檔容易被系統關掉分頁
+    const WAVE_DECODE_RATES = [3000, 8000, 22050];        // 低取樣率解碼即可，省記憶體
+    const WAVE_ZOOM_LEVELS = [0, 60, 20, 5];              // 0 = 全覽
+    const COLOR_PLAYED = '#3b82f6';
+    const COLOR_UNPLAYED = '#cbd5e1';
+    const COLOR_MARKER = '#f59e0b';
+    const COLOR_PLAYHEAD = '#0f172a';
+
+    const waveWrap = $('waveWrap');
+    const waveCanvas = $('wave');
+    const waveStatus = $('waveStatus');
+    const waveCtx = waveCanvas.getContext('2d');
+    let wavePeaks = null;   // { data: Float32Array(0~1), perSec }
+    let waveToken = 0;      // 換檔時讓舊的解碼結果作廢
+    let waveZoom = 0;
+    let waveDrag = null;
+    let drawPending = false;
+
+    function setWaveStatus(text) {
+      waveStatus.textContent = text;
+    }
+
+    function waitForMetadata() {
+      return new Promise((resolve) => {
+        if (player.readyState >= 1) return resolve();
+        player.addEventListener('loadedmetadata', resolve, { once: true });
+        player.addEventListener('error', resolve, { once: true });
+      });
+    }
+
+    function computePeaks(audio) {
+      const step = Math.max(1, Math.round(audio.sampleRate / WAVE_PEAKS_PER_SEC));
+      const n = Math.ceil(audio.length / step);
+      const peaks = new Float32Array(n);
+      for (let c = 0; c < audio.numberOfChannels; c++) {
+        const data = audio.getChannelData(c);
+        for (let i = 0; i < n; i++) {
+          let m = peaks[i];
+          const end = Math.min(data.length, (i + 1) * step);
+          for (let j = i * step; j < end; j++) {
+            const v = data[j] < 0 ? -data[j] : data[j];
+            if (v > m) m = v;
+          }
+          peaks[i] = m;
+        }
+      }
+      let max = 0;
+      for (let i = 0; i < n; i++) if (peaks[i] > max) max = peaks[i];
+      if (max > 0) for (let i = 0; i < n; i++) peaks[i] /= max;
+      return { data: peaks, perSec: audio.sampleRate / step };
+    }
+
+    async function decodePeaks(arrayBuffer) {
+      const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      if (!OAC) throw new Error('unsupported');
+      for (const rate of WAVE_DECODE_RATES) {
+        let ctx;
+        try { ctx = new OAC(1, 1, rate); } catch { continue; } // 部分瀏覽器不支援極低取樣率
+        const audio = await new Promise((res, rej) => ctx.decodeAudioData(arrayBuffer, res, rej));
+        return computePeaks(audio);
+      }
+      throw new Error('unsupported');
+    }
+
+    async function startWaveform(file) {
+      const token = ++waveToken;
+      wavePeaks = null;
+      waveDrag = null;
+      waveWrap.classList.remove('hidden');
+      setWaveStatus('分析音波中…');
+      requestDraw();
+
+      if (file.size > WAVE_MAX_FILE_BYTES) {
+        setWaveStatus('檔案過大，未產生音波（仍可點擊下方軸線跳轉）');
+        return;
+      }
+      await waitForMetadata();
+      if (token !== waveToken) return;
+      if (Number.isFinite(player.duration) && player.duration > WAVE_MAX_SECONDS) {
+        setWaveStatus(`音檔超過 ${WAVE_MAX_SECONDS / 60} 分鐘，未產生音波（仍可點擊下方軸線跳轉）`);
+        requestDraw();
+        return;
+      }
+      try {
+        const buf = await file.arrayBuffer();
+        if (token !== waveToken) return;
+        const peaks = await decodePeaks(buf);
+        if (token !== waveToken) return;
+        wavePeaks = peaks;
+        setWaveStatus('點擊或拖曳音波可跳轉，橘色旗標為書籤');
+      } catch {
+        if (token === waveToken) setWaveStatus('無法分析此音檔的音波（仍可正常播放）');
+      }
+      requestDraw();
+    }
+
+    function setWaveZoom(sec) {
+      waveZoom = sec;
+      document.querySelectorAll('.zoom-btn').forEach((btn) => {
+        btn.className = Number(btn.dataset.zoom) === sec
+          ? 'zoom-btn px-2 py-1 rounded bg-white text-blue-600 font-bold shadow-sm transition'
+          : 'zoom-btn px-2 py-1 rounded hover:bg-white transition';
+      });
+      requestDraw();
+    }
+
+    // 目前畫面顯示的時間範圍；放大時播放頭固定在正中央
+    function waveView() {
+      const dur = player.duration;
+      if (!hasAudio() || !Number.isFinite(dur) || dur <= 0) return null;
+      if (!waveZoom || waveZoom >= dur) return { start: 0, end: dur, dur };
+      const c = player.currentTime;
+      return { start: c - waveZoom / 2, end: c + waveZoom / 2, dur };
+    }
+
+    function requestDraw() {
+      if (drawPending) return;
+      drawPending = true;
+      requestAnimationFrame(() => {
+        drawPending = false;
+        drawWave();
+        if (!player.paused) requestDraw(); // 播放中持續更新；暫停時不耗電
+      });
+    }
+
+    function drawWave() {
+      if (waveWrap.classList.contains('hidden')) return;
+      const w = waveCanvas.clientWidth;
+      const h = waveCanvas.clientHeight;
+      if (!w || !h) return;
+      const dpr = window.devicePixelRatio || 1;
+      if (waveCanvas.width !== Math.round(w * dpr) || waveCanvas.height !== Math.round(h * dpr)) {
+        waveCanvas.width = Math.round(w * dpr);
+        waveCanvas.height = Math.round(h * dpr);
+      }
+      const g = waveCtx;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.clearRect(0, 0, w, h);
+
+      const view = waveView();
+      if (!view) return;
+      const top = 18, bottom = h - 6;
+      const mid = (top + bottom) / 2, half = (bottom - top) / 2;
+      const spp = (view.end - view.start) / w; // 每像素幾秒
+      const cur = player.currentTime;
+      const toX = (t) => (t - view.start) / spp;
+
+      if (wavePeaks) {
+        const { data, perSec } = wavePeaks;
+        const BAR = 2, STEP = 3;
+        for (let x = 0; x < w; x += STEP) {
+          const t0 = view.start + x * spp;
+          const t1 = t0 + STEP * spp;
+          if (t1 <= 0 || t0 >= view.dur) continue;
+          const i0 = Math.max(0, Math.floor(t0 * perSec));
+          const i1 = Math.min(data.length, Math.max(i0 + 1, Math.ceil(t1 * perSec)));
+          let m = 0;
+          for (let i = i0; i < i1; i++) if (data[i] > m) m = data[i];
+          const a = Math.max(1, m * half);
+          g.fillStyle = t0 < cur ? COLOR_PLAYED : COLOR_UNPLAYED;
+          g.fillRect(x, mid - a, BAR, a * 2);
+        }
+      } else {
+        // 沒有音波資料時，畫一條可點擊的時間軸
+        const x0 = Math.max(0, toX(0));
+        const x1 = Math.min(w, toX(view.dur));
+        const xc = Math.min(x1, Math.max(x0, toX(cur)));
+        g.fillStyle = COLOR_PLAYED;
+        g.fillRect(x0, mid - 2, xc - x0, 4);
+        g.fillStyle = COLOR_UNPLAYED;
+        g.fillRect(xc, mid - 2, x1 - xc, 4);
+      }
+
+      // 書籤旗標
+      g.font = '600 10px system-ui, sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      bookmarks.forEach((bm, i) => {
+        const x = toX(bm.time);
+        if (x < -10 || x > w + 10) return;
+        g.fillStyle = COLOR_MARKER;
+        g.fillRect(Math.round(x) - 0.5, top - 4, 1, bottom - top + 4);
+        g.beginPath();
+        g.moveTo(x - 8, 0); g.lineTo(x + 8, 0); g.lineTo(x + 8, 11); g.lineTo(x, 16); g.lineTo(x - 8, 11);
+        g.closePath();
+        g.fill();
+        g.fillStyle = '#ffffff';
+        g.fillText(i < 99 ? String(i + 1) : '•', x, 6);
+      });
+
+      // 播放頭
+      g.fillStyle = COLOR_PLAYHEAD;
+      g.fillRect(Math.round(toX(cur)) - 1, top - 6, 2, bottom - top + 12);
+    }
+
+    // ---- 音波點擊 / 拖曳 ----
+    function canvasX(e) {
+      return e.clientX - waveCanvas.getBoundingClientRect().left;
+    }
+    function clampTime(t) {
+      return Math.max(0, Math.min(player.duration || 0, t));
+    }
+
+    waveCanvas.addEventListener('pointerdown', (e) => {
+      const v = waveView();
+      if (!v) return;
+      e.preventDefault();
+      waveCanvas.setPointerCapture(e.pointerId);
+      waveDrag = {
+        x0: canvasX(e),
+        t0: player.currentTime,
+        view: v,
+        spp: (v.end - v.start) / waveCanvas.clientWidth,
+        moved: false,
+        wasPlaying: !player.paused
+      };
+    });
+
+    waveCanvas.addEventListener('pointermove', (e) => {
+      if (!waveDrag) return;
+      const x = canvasX(e);
+      const dx = x - waveDrag.x0;
+      if (!waveDrag.moved && Math.abs(dx) < 5) return;
+      if (!waveDrag.moved) {
+        waveDrag.moved = true;
+        if (waveDrag.wasPlaying) player.pause(); // 拖曳時先暫停，放開後繼續
+      }
+      // 全覽：手指在哪就跳到哪；放大：像拉動膠卷一樣捲動
+      player.currentTime = waveZoom && waveDrag.view.end - waveDrag.view.start < waveDrag.view.dur
+        ? clampTime(waveDrag.t0 - dx * waveDrag.spp)
+        : clampTime(waveDrag.view.start + x * waveDrag.spp);
+      requestDraw();
+    });
+
+    function endWaveDrag(e) {
+      if (!waveDrag) return;
+      const d = waveDrag;
+      waveDrag = null;
+      if (!d.moved && e.type === 'pointerup') {
+        const x = canvasX(e);
+        // 點到書籤旗標附近時，精準跳到該書籤
+        let hit = null, best = 14;
+        for (const bm of bookmarks) {
+          const dist = Math.abs((bm.time - d.view.start) / d.spp - x);
+          if (dist < best) { best = dist; hit = bm; }
+        }
+        player.currentTime = clampTime(hit ? hit.time : d.view.start + x * d.spp);
+      }
+      if (d.moved && d.wasPlaying) player.play().catch(() => {});
+      requestDraw();
+    }
+    waveCanvas.addEventListener('pointerup', endWaveDrag);
+    waveCanvas.addEventListener('pointercancel', endWaveDrag);
+
+    ['play', 'pause', 'seeked', 'timeupdate', 'loadedmetadata', 'durationchange'].forEach((ev) => {
+      player.addEventListener(ev, requestDraw);
+    });
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(requestDraw).observe(waveCanvas);
+    } else {
+      window.addEventListener('resize', requestDraw);
+    }
+
+    renderBookmarks();
+    showRestoreHint();
+  </script>
+</body>
+</html>

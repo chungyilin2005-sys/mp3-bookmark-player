@@ -37,6 +37,11 @@ try {
   ].join('; ');
 
   html = html.replace('__CSP__', csp);
+
+  // 小圖示：src/favicon.svg 轉成 data URI 內嵌（CSP 只允許 img-src data:）
+  const svg = readFileSync(join(root, 'src', 'favicon.svg'), 'utf8').trim();
+  const favicon = 'data:image/svg+xml,' + encodeURIComponent(svg);
+  html = html.replace('__FAVICON__', () => favicon);
   writeFileSync(outPath, html);
   console.log(`已輸出 ${outPath}（CSS ${css.length} bytes，script 雜湊 ${hashes.length} 個）`);
 } finally {

@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Security-Policy" content="__CSP__">
   <meta name="referrer" content="no-referrer">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MP3 時間軸書籤播放器 v1.4</title>
+  <title>MP3 時間軸書籤播放器 v1.5</title>
   <link rel="icon" type="image/svg+xml" href="__FAVICON__">
   <style>
 /*__TAILWIND__*/
@@ -35,7 +35,7 @@
         <h1 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
           <span>🎧 MP3 時間軸書籤播放器</span>
         </h1>
-        <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-3 py-1 rounded-full">v1.4 音波版</span>
+        <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-3 py-1 rounded-full">v1.5 剪輯版</span>
       </div>
 
       <!-- 檔案選擇區 -->
@@ -93,6 +93,58 @@
           <button type="button" data-action="speed" data-speed="1.5" class="speed-btn px-2 py-1 rounded hover:bg-white transition">1.5x</button>
         </div>
       </div>
+
+      <!-- 剪輯面板 -->
+      <details id="editPanel" class="mt-4 pt-3 border-t border-slate-100">
+        <summary class="cursor-pointer select-none text-sm font-bold text-slate-700 hover:text-blue-600 transition">✂️ 剪輯（選取片段匯出・依書籤分割）</summary>
+        <div class="mt-3 space-y-4">
+          <p id="editMode" class="text-xs text-slate-500">請先選擇音訊檔案</p>
+
+          <!-- 選取範圍 -->
+          <div class="p-3 bg-emerald-50/60 border border-emerald-200 rounded-xl space-y-3">
+            <div class="flex flex-wrap items-center gap-2 text-sm">
+              <span class="font-semibold text-emerald-800">選取範圍</span>
+              <span class="font-mono text-xs bg-white border border-emerald-200 rounded px-2 py-1">A <span id="selAText">開頭</span></span>
+              <span class="text-slate-400">→</span>
+              <span class="font-mono text-xs bg-white border border-emerald-200 rounded px-2 py-1">B <span id="selBText">結尾</span></span>
+              <span id="selLenText" class="text-xs text-emerald-700"></span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" data-action="sel-a" data-edit-btn class="px-3 py-1.5 bg-white hover:bg-emerald-50 border border-emerald-300 rounded-lg text-xs font-medium text-emerald-800 transition disabled:opacity-40 disabled:cursor-not-allowed">[ 目前位置設為起點 A</button>
+              <button type="button" data-action="sel-b" data-edit-btn class="px-3 py-1.5 bg-white hover:bg-emerald-50 border border-emerald-300 rounded-lg text-xs font-medium text-emerald-800 transition disabled:opacity-40 disabled:cursor-not-allowed">目前位置設為終點 B ]</button>
+              <button type="button" data-action="sel-clear" data-edit-btn class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-600 transition disabled:opacity-40 disabled:cursor-not-allowed">清除選取</button>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              <span class="text-slate-600">用書籤選取：</span>
+              <select id="bmFrom" class="max-w-[10rem] px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs"></select>
+              <span class="text-slate-500">到</span>
+              <select id="bmTo" class="max-w-[10rem] px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs"></select>
+              <button type="button" data-action="sel-from-bm" data-edit-btn class="px-3 py-1.5 bg-white hover:bg-emerald-50 border border-emerald-300 rounded-lg text-xs font-medium text-emerald-800 transition disabled:opacity-40 disabled:cursor-not-allowed">套用</button>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" data-action="sel-preview" data-edit-btn class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition disabled:opacity-40 disabled:cursor-not-allowed">▶ 試聽選取</button>
+              <button type="button" id="loopBtn" data-action="sel-loop" data-edit-btn class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition disabled:opacity-40 disabled:cursor-not-allowed">🔁 A-B 循環：關</button>
+              <button type="button" data-action="export-clip" data-edit-btn class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">⬇ 匯出片段</button>
+            </div>
+            <label class="flex items-center gap-2 text-xs text-slate-600">
+              <input type="checkbox" id="clipWithBm" checked class="accent-emerald-600">
+              同時匯出範圍內的書籤（JSON，時間換算成片段內的時間）
+            </label>
+          </div>
+
+          <!-- 依書籤分割 -->
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-sm font-semibold text-slate-700">依書籤分割</span>
+              <span id="splitInfo" class="text-xs text-slate-500"></span>
+            </div>
+            <p class="text-xs text-slate-500">以每個書籤為切點，把整個音檔切成多段、用書籤備註命名，打包成一個 ZIP 下載。</p>
+            <button type="button" data-action="split" data-edit-btn class="px-4 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-medium transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">📦 分割並下載 ZIP</button>
+          </div>
+
+          <p id="editStatus" role="status" aria-live="polite" class="text-xs text-slate-600 min-h-[1rem]"></p>
+        </div>
+      </details>
     </div>
 
     <!-- 書籤管理卡片 -->
@@ -148,6 +200,8 @@
         <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">B</kbd> 暫停並聚焦輸入書籤</span>
         <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">M</kbd> 靜音切換</span>
         <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">Z</kbd> 切換音波縮放</span>
+        <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">[</kbd> / <kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">]</kbd> 設定剪輯起點 / 終點</span>
+        <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">L</kbd> A-B 循環</span>
         <span><kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">1</kbd>～<kbd class="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-slate-700 shadow-sm">9</kbd> 跳轉至對應編號書籤</span>
       </div>
     </div>
@@ -316,6 +370,7 @@
 
       player.src = currentAudioUrl;
       player.load();
+      resetEditForFile(file);
       renderBookmarks();
       startWaveform(file);
 
@@ -337,6 +392,7 @@
 
     player.addEventListener('timeupdate', () => {
       liveTimeBadge.textContent = formatTime(player.currentTime);
+      checkPlaybackBounds(); // 背景分頁沒有動畫影格時，靠這裡處理 A-B 循環
       // 播放中每 3 秒記錄一次位置
       if (!player.paused && Date.now() - lastPositionSave > 3000) {
         lastPositionSave = Date.now();
@@ -508,6 +564,7 @@
     function renderBookmarks() {
       saveState(); // 每次書籤變動都會重新渲染，順便自動儲存
       requestDraw(); // 更新音波上的書籤標記
+      updateEditPanel(); // 更新剪輯面板的書籤選單與分割資訊
       bmCount.textContent = String(bookmarks.length);
       bookmarkList.replaceChildren();
 
@@ -574,13 +631,22 @@
         bookmarks: bookmarks.map(({ time, note }) => ({ time, note }))
       };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      downloadBlob(blob, `${safeName(currentAudioName)}_書籤.json`);
+      showToast('已匯出 JSON 書籤檔', '💾');
+    }
+
+    // 檔名中不允許的字元換成底線
+    function safeName(s, max = 80) {
+      return String(s).replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_').trim().slice(0, max) || 'untitled';
+    }
+
+    function downloadBlob(blob, filename) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${currentAudioName.replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_')}_書籤.json`;
+      a.download = filename;
       a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      showToast('已匯出 JSON 書籤檔', '💾');
+      setTimeout(() => URL.revokeObjectURL(url), 30000); // 大檔案在手機上需要時間寫入
     }
 
     // 匯入書籤：限制檔案大小、筆數、備註長度，並過濾不合法的時間
@@ -633,6 +699,14 @@
         case 'clear': handleClearClick(); break;
         case 'add-from-input': addBookmarkFromInput(); break;
         case 'zoom': setWaveZoom(Number(btn.dataset.zoom)); break;
+        case 'sel-a': setSelA(player.currentTime); break;
+        case 'sel-b': setSelB(player.currentTime); break;
+        case 'sel-clear': clearSelection(); break;
+        case 'sel-from-bm': selectFromBookmarks(); break;
+        case 'sel-preview': previewSelection(); break;
+        case 'sel-loop': toggleLoop(); break;
+        case 'export-clip': exportClip(); break;
+        case 'split': splitByBookmarks(); break;
       }
     });
 
@@ -673,7 +747,7 @@
     // 全域鍵盤快捷鍵
     document.addEventListener('keydown', (e) => {
       const active = document.activeElement;
-      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
+      if (active && (['INPUT', 'TEXTAREA', 'SELECT', 'SUMMARY'].includes(active.tagName) || active.isContentEditable)) return;
       if (e.ctrlKey || e.metaKey || e.altKey) return;
 
       // 焦點在音訊控制條上時，Space 與方向鍵交給瀏覽器原生處理，避免重複觸發
@@ -697,6 +771,14 @@
       } else if (e.key.toLowerCase() === 'z') {
         const levels = WAVE_ZOOM_LEVELS;
         setWaveZoom(levels[(levels.indexOf(waveZoom) + 1) % levels.length]);
+      } else if (e.key === '[') {
+        e.preventDefault();
+        setSelA(player.currentTime);
+      } else if (e.key === ']') {
+        e.preventDefault();
+        setSelB(player.currentTime);
+      } else if (e.key.toLowerCase() === 'l') {
+        toggleLoop();
       } else if (e.key.toLowerCase() === 'm') {
         player.muted = !player.muted;
         showToast(player.muted ? '已靜音' : '已取消靜音', player.muted ? '🔇' : '🔊');
@@ -720,6 +802,8 @@
     const COLOR_UNPLAYED = '#cbd5e1';
     const COLOR_MARKER = '#f59e0b';
     const COLOR_PLAYHEAD = '#0f172a';
+    const COLOR_SEL = '#10b981';
+    const COLOR_SEL_FILL = 'rgba(16, 185, 129, 0.15)';
 
     const waveWrap = $('waveWrap');
     const waveCanvas = $('wave');
@@ -833,6 +917,7 @@
       drawPending = true;
       requestAnimationFrame(() => {
         drawPending = false;
+        checkPlaybackBounds();
         drawWave();
         if (!player.paused) requestDraw(); // 播放中持續更新；暫停時不耗電
       });
@@ -886,6 +971,28 @@
         g.fillRect(xc, mid - 2, x1 - xc, 4);
       }
 
+      // 剪輯選取範圍（綠色）
+      if (hasSelection()) {
+        const a = sel.a ?? 0, b = sel.b ?? view.dur;
+        const xa = toX(a), xb = toX(b);
+        g.fillStyle = COLOR_SEL_FILL;
+        g.fillRect(xa, 0, xb - xa, h);
+        g.fillStyle = COLOR_SEL;
+        g.font = '700 10px system-ui, sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        if (sel.a !== null) {
+          g.fillRect(Math.round(xa) - 1, 0, 2, h);
+          g.fillRect(xa, h - 16, 14, 16);
+          g.fillStyle = '#ffffff'; g.fillText('A', xa + 7, h - 8); g.fillStyle = COLOR_SEL;
+        }
+        if (sel.b !== null) {
+          g.fillRect(Math.round(xb) - 1, 0, 2, h);
+          g.fillRect(xb - 14, h - 16, 14, 16);
+          g.fillStyle = '#ffffff'; g.fillText('B', xb - 7, h - 8);
+        }
+      }
+
       // 書籤旗標
       g.font = '600 10px system-ui, sans-serif';
       g.textAlign = 'center';
@@ -921,6 +1028,14 @@
       if (!v) return;
       e.preventDefault();
       waveCanvas.setPointerCapture(e.pointerId);
+      // 按在 A / B 把手附近（音波下半部，A/B 標籤所在處）：拖曳調整剪輯範圍；
+      // 上半部仍是書籤旗標與跳轉，避免 A/B 與書籤重疊時點不到書籤
+      const inLowerHalf = e.clientY - waveCanvas.getBoundingClientRect().top > waveCanvas.clientHeight / 2;
+      const handle = inLowerHalf ? hitSelectionHandle(canvasX(e), v) : null;
+      if (handle) {
+        waveDrag = { handle };
+        return;
+      }
       waveDrag = {
         x0: canvasX(e),
         t0: player.currentTime,
@@ -934,6 +1049,11 @@
     waveCanvas.addEventListener('pointermove', (e) => {
       if (!waveDrag) return;
       const x = canvasX(e);
+      if (waveDrag.handle) {
+        const v = waveView();
+        if (v) moveSelectionHandle(waveDrag.handle, v.start + x * (v.end - v.start) / waveCanvas.clientWidth);
+        return;
+      }
       const dx = x - waveDrag.x0;
       if (!waveDrag.moved && Math.abs(dx) < 5) return;
       if (!waveDrag.moved) {
@@ -951,6 +1071,11 @@
       if (!waveDrag) return;
       const d = waveDrag;
       waveDrag = null;
+      if (d.handle) {
+        updateEditPanel();
+        requestDraw();
+        return;
+      }
       if (!d.moved && e.type === 'pointerup') {
         const x = canvasX(e);
         // 點到書籤旗標附近時，精準跳到該書籤
@@ -975,6 +1100,596 @@
     } else {
       window.addEventListener('resize', requestDraw);
     }
+
+    // =====================================================================
+    // ---- 剪輯：選取範圍、A-B 循環、匯出片段、依書籤分割 ----
+    // =====================================================================
+    const MIN_CLIP_SECONDS = 0.1;
+    const WAV_EXPORT_RATE = 44100;
+    const WAV_MAX_SOURCE_SECONDS = (IS_TOUCH ? 15 : 45) * 60; // 非 MP3 需整檔解碼成 PCM，較吃記憶體
+    const editPanel = $('editPanel');
+    const editStatus = $('editStatus');
+    const editMode = $('editMode');
+    const bmFrom = $('bmFrom');
+    const bmTo = $('bmTo');
+    const loopBtn = $('loopBtn');
+
+    let currentFile = null;
+    const sel = { a: null, b: null };   // null 代表「開頭」/「結尾」
+    let abLoop = false;
+    let previewStopAt = null;
+    let ignoreNextSeek = false;
+    let editBusy = false;
+    let mp3Cache = null;                // { file, u8, offsets, times, count }
+
+    function isMp3File(file) {
+      return /\.mp3$/i.test(file.name) || file.type === 'audio/mpeg';
+    }
+
+    function resetEditForFile(file) {
+      currentFile = file;
+      mp3Cache = null;
+      sel.a = sel.b = null;
+      previewStopAt = null;
+      setLoop(false);
+      editStatus.textContent = '';
+    }
+
+    function hasSelection() {
+      return sel.a !== null || sel.b !== null;
+    }
+
+    // 實際要剪的範圍；沒設定的一端代表檔案開頭 / 結尾
+    function selRange() {
+      const dur = player.duration;
+      if (!hasAudio() || !Number.isFinite(dur) || !hasSelection()) return null;
+      const a = sel.a ?? 0, b = sel.b ?? dur;
+      return b - a >= MIN_CLIP_SECONDS ? { a, b } : null;
+    }
+
+    function afterSelChange() {
+      updateEditPanel();
+      requestDraw();
+    }
+
+    function setSelA(t) {
+      if (!hasAudio()) return;
+      sel.a = clampTime(t);
+      if (sel.b !== null && sel.b - sel.a < MIN_CLIP_SECONDS) sel.b = null;
+      afterSelChange();
+      showToast(`起點 A：${formatTime(sel.a)}`, '✂️');
+    }
+
+    function setSelB(t) {
+      if (!hasAudio()) return;
+      sel.b = clampTime(t);
+      if (sel.a !== null && sel.b - sel.a < MIN_CLIP_SECONDS) sel.a = null;
+      afterSelChange();
+      showToast(`終點 B：${formatTime(sel.b)}`, '✂️');
+    }
+
+    function clearSelection() {
+      sel.a = sel.b = null;
+      previewStopAt = null;
+      setLoop(false);
+      afterSelChange();
+    }
+
+    // 音波上的 A / B 把手
+    function hitSelectionHandle(x, view) {
+      if (!hasSelection()) return null;
+      const spp = (view.end - view.start) / waveCanvas.clientWidth;
+      const da = sel.a !== null ? Math.abs((sel.a - view.start) / spp - x) : Infinity;
+      const db = sel.b !== null ? Math.abs((sel.b - view.start) / spp - x) : Infinity;
+      if (Math.min(da, db) > 12) return null;
+      return da <= db ? 'a' : 'b';
+    }
+
+    function moveSelectionHandle(which, t) {
+      const dur = player.duration || 0;
+      if (which === 'a') {
+        const max = (sel.b ?? dur) - MIN_CLIP_SECONDS;
+        sel.a = Math.max(0, Math.min(max, t));
+      } else {
+        const min = (sel.a ?? 0) + MIN_CLIP_SECONDS;
+        sel.b = Math.min(dur, Math.max(min, t));
+      }
+      updateEditPanel();
+      requestDraw();
+    }
+
+    function selectFromBookmarks() {
+      if (!hasAudio()) return;
+      const dur = player.duration || 0;
+      const timeOf = (v, fallback) => {
+        if (v === 'start') return 0;
+        if (v === 'end') return dur;
+        const bm = findBookmark(Number(v));
+        return bm ? bm.time : fallback;
+      };
+      const a = timeOf(bmFrom.value, 0);
+      const b = timeOf(bmTo.value, dur);
+      if (b - a < MIN_CLIP_SECONDS) {
+        showToast('終點必須在起點之後', '⚠️');
+        return;
+      }
+      sel.a = a <= 0 ? null : a;
+      sel.b = b >= dur ? null : b;
+      if (!hasSelection()) sel.a = 0; // 選了「開頭到結尾」也算一個選取
+      afterSelChange();
+      showToast(`已選取 ${formatTime(a)} → ${formatTime(b)}`, '✂️');
+    }
+
+    function previewSelection() {
+      const r = selRange();
+      if (!r) { showToast('請先設定剪輯範圍', '⚠️'); return; }
+      ignoreNextSeek = true;
+      player.currentTime = r.a;
+      previewStopAt = abLoop ? null : r.b;
+      player.play().catch(() => {});
+      scheduleBoundTimer();
+    }
+
+    function setLoop(on) {
+      abLoop = on;
+      loopBtn.textContent = on ? '🔁 A-B 循環：開' : '🔁 A-B 循環：關';
+      loopBtn.classList.toggle('bg-emerald-600', on);
+      loopBtn.classList.toggle('text-white', on);
+      loopBtn.classList.toggle('border-emerald-600', on);
+      loopBtn.classList.toggle('bg-white', !on);
+      loopBtn.classList.toggle('text-slate-700', !on);
+    }
+
+    function toggleLoop() {
+      if (!abLoop && !selRange()) { showToast('請先設定剪輯範圍', '⚠️'); return; }
+      setLoop(!abLoop);
+      if (abLoop) {
+        previewStopAt = null;
+        const r = selRange();
+        if (player.currentTime < r.a || player.currentTime >= r.b) {
+          ignoreNextSeek = true;
+          player.currentTime = r.a;
+        }
+        player.play().catch(() => {});
+      }
+      scheduleBoundTimer();
+      showToast(abLoop ? 'A-B 循環播放：開' : 'A-B 循環播放：關', '🔁');
+    }
+
+    // 試聽到終點時停止；循環模式時跳回起點
+    function checkPlaybackBounds() {
+      if (player.paused) return;
+      const t = player.currentTime;
+      if (previewStopAt !== null && t >= previewStopAt) {
+        previewStopAt = null;
+        player.pause();
+        return;
+      }
+      const r = abLoop ? selRange() : null;
+      if (r && t >= r.b) {
+        ignoreNextSeek = true;
+        player.currentTime = r.a;
+      }
+    }
+
+    // 用計時器對準終點 B，比只靠動畫影格 / timeupdate（約 0.25 秒一次）更準
+    let boundTimer = null;
+    function scheduleBoundTimer() {
+      clearTimeout(boundTimer);
+      boundTimer = null;
+      if (player.paused) return;
+      const r = selRange();
+      const target = previewStopAt ?? (abLoop && r ? r.b : null);
+      if (target === null) return;
+      const ms = ((target - player.currentTime) / (player.playbackRate || 1)) * 1000;
+      boundTimer = setTimeout(() => {
+        checkPlaybackBounds();
+        scheduleBoundTimer();
+      }, Math.max(0, Math.min(ms - 5, 1000)));
+    }
+    ['play', 'playing', 'seeked', 'ratechange', 'pause'].forEach((ev) => player.addEventListener(ev, scheduleBoundTimer));
+
+    // 使用者自己跳到別處時，取消「試聽到終點停止」
+    player.addEventListener('seeking', () => {
+      if (ignoreNextSeek) { ignoreNextSeek = false; return; }
+      previewStopAt = null;
+    });
+
+    function fillBookmarkSelect(select, edgeValue, edgeLabel, prepend) {
+      const prev = select.value;
+      select.replaceChildren();
+      const edge = el('option', '', { value: edgeValue, text: edgeLabel });
+      if (prepend) select.append(edge);
+      bookmarks.forEach((bm, i) => {
+        select.append(el('option', '', { value: String(bm.id), text: `${i + 1}. ${formatTime(bm.time)} ${bm.note}`.slice(0, 60) }));
+      });
+      if (!prepend) select.append(edge);
+      if ([...select.options].some((o) => o.value === prev)) select.value = prev;
+    }
+
+    function updateEditPanel() {
+      const ready = hasAudio() && Number.isFinite(player.duration) && player.duration > 0;
+      editPanel.querySelectorAll('[data-edit-btn]').forEach((b) => { b.disabled = !ready || editBusy; });
+      bmFrom.disabled = bmTo.disabled = !ready || editBusy;
+
+      if (!currentFile) {
+        editMode.textContent = '請先選擇音訊檔案';
+      } else if (isMp3File(currentFile)) {
+        editMode.textContent = '🎯 MP3：直接切割、不重新編碼，速度快且音質不變（切點會對齊到約 0.026 秒的音框）';
+      } else {
+        editMode.textContent = `🎼 此格式會輸出成 WAV（無損但檔案較大，約每分鐘 10 MB；來源限 ${WAV_MAX_SOURCE_SECONDS / 60} 分鐘內）`;
+      }
+
+      $('selAText').textContent = sel.a !== null ? formatTime(sel.a) : '開頭';
+      $('selBText').textContent = sel.b !== null ? formatTime(sel.b) : '結尾';
+      const r = selRange();
+      $('selLenText').textContent = r ? `長度 ${formatTime(r.b - r.a)}` : (hasSelection() ? '範圍太短' : '尚未選取');
+
+      fillBookmarkSelect(bmFrom, 'start', '檔案開頭', true);
+      fillBookmarkSelect(bmTo, 'end', '檔案結尾', false);
+      if (bmTo.value === '' && bmTo.options.length) bmTo.value = 'end';
+
+      const segs = ready ? splitSegments(player.duration) : [];
+      $('splitInfo').textContent = bookmarks.length === 0 ? '尚無書籤可當切點' : `將切成 ${segs.length} 段`;
+    }
+
+    function setBusy(on, msg = '') {
+      editBusy = on;
+      editStatus.textContent = msg;
+      updateEditPanel();
+    }
+
+    // ---- MP3 音框解析與切割（不重新編碼） ----
+    const MP3_BITRATES = {
+      V1L1: [0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448],
+      V1L2: [0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384],
+      V1L3: [0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320],
+      V2L1: [0, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256],
+      V2L2: [0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160] // MPEG-2/2.5 Layer II 與 III 共用
+    };
+    const MP3_SAMPLE_RATES = { 3: [44100, 48000, 32000], 2: [22050, 24000, 16000], 0: [11025, 12000, 8000] };
+
+    function mp3FrameAt(u8, p) {
+      if (p + 4 > u8.length || u8[p] !== 0xff || (u8[p + 1] & 0xe0) !== 0xe0) return null;
+      const ver = (u8[p + 1] >> 3) & 3;          // 3 = MPEG-1, 2 = MPEG-2, 0 = MPEG-2.5
+      const layerBits = (u8[p + 1] >> 1) & 3;
+      const brIdx = u8[p + 2] >> 4;
+      const srIdx = (u8[p + 2] >> 2) & 3;
+      const pad = (u8[p + 2] >> 1) & 1;
+      if (ver === 1 || layerBits === 0 || brIdx === 0 || brIdx === 15 || srIdx === 3) return null;
+      const layer = 4 - layerBits;
+      const v1 = ver === 3;
+      const table = v1 ? MP3_BITRATES['V1L' + layer] : (layer === 1 ? MP3_BITRATES.V2L1 : MP3_BITRATES.V2L2);
+      const br = table[brIdx] * 1000;
+      const sr = MP3_SAMPLE_RATES[ver][srIdx];
+      let len, samples;
+      if (layer === 1) { len = (Math.floor(12 * br / sr) + pad) * 4; samples = 384; }
+      else if (layer === 2) { len = Math.floor(144 * br / sr) + pad; samples = 1152; }
+      else { len = Math.floor((v1 ? 144 : 72) * br / sr) + pad; samples = v1 ? 1152 : 576; }
+      return { len, samples, sr, ver, layer };
+    }
+
+    // 第一個音框若是 Xing / Info / VBRI 標頭（記錄整首長度），切割後會失真，所以略過
+    function isVbrHeaderFrame(u8, p, f) {
+      const end = Math.min(p + f.len, p + 200) - 4;
+      for (let i = p + 4; i <= end; i++) {
+        const s = String.fromCharCode(u8[i], u8[i + 1], u8[i + 2], u8[i + 3]);
+        if (s === 'Xing' || s === 'Info' || s === 'VBRI') return true;
+      }
+      return false;
+    }
+
+    function parseMp3(u8) {
+      let pos = 0;
+      if (u8.length > 10 && u8[0] === 0x49 && u8[1] === 0x44 && u8[2] === 0x33) { // ID3v2
+        const size = ((u8[6] & 0x7f) << 21) | ((u8[7] & 0x7f) << 14) | ((u8[8] & 0x7f) << 7) | (u8[9] & 0x7f);
+        pos = 10 + size + ((u8[5] & 0x10) ? 10 : 0);
+      }
+      let end = u8.length;
+      if (end >= 128 && u8[end - 128] === 0x54 && u8[end - 127] === 0x41 && u8[end - 126] === 0x47) end -= 128; // ID3v1
+      const searchLimit = pos + (1 << 20);
+      const offsets = [], times = [];
+      let t = 0, ref = null, lastEnd = pos, vbrHeader = false;
+      while (pos + 4 <= end) {
+        const f = mp3FrameAt(u8, pos);
+        const next = f ? pos + f.len : 0;
+        const ok = f && f.len > 4 && next <= end
+          && (next + 4 > end || mp3FrameAt(u8, next))     // 下一個音框也要合法，避免誤判
+          && (!ref || (f.sr === ref.sr && f.ver === ref.ver && f.layer === ref.layer));
+        if (!ok) {
+          if (!ref && pos > searchLimit) break;           // 開頭 1 MB 內找不到音框：不是 MP3
+          pos++;
+          continue;
+        }
+        if (!ref) {
+          ref = f;
+          if (isVbrHeaderFrame(u8, pos, f)) { vbrHeader = true; pos = next; lastEnd = next; continue; }
+        }
+        offsets.push(pos);
+        times.push(t);
+        t += f.samples / f.sr;
+        pos = next;
+        lastEnd = next;
+      }
+      offsets.push(lastEnd);
+      times.push(t);
+      return { offsets, times, count: offsets.length - 1, vbrHeader };
+    }
+
+    // 為切出來的片段重新產生 Xing 標頭（總音框數、總位元組、100 格跳轉表），
+    // 讓播放器顯示正確長度、VBR 檔也能準確跳轉
+    function buildXingFrame(src, s, e) {
+      const u8 = src.u8, p = src.offsets[s];
+      const f = mp3FrameAt(u8, p);
+      if (!f || f.layer !== 3) return null;
+      const mono = ((u8[p + 3] >> 6) & 3) === 3;
+      const side = f.ver === 3 ? (mono ? 17 : 32) : (mono ? 9 : 17);
+      const need = 4 + side + 16 + 100;
+      const b1 = u8[p + 1] | 1;                     // 不使用 CRC
+      const srIdx = (u8[p + 2] >> 2) & 3;
+      let hdr = null, len = 0;
+      for (let br = 1; br < 15; br++) {             // 找一個裝得下 Xing 資訊的位元率
+        const h = new Uint8Array([0xff, b1, (br << 4) | (srIdx << 2), u8[p + 3]]);
+        const ff = mp3FrameAt(h, 0);
+        if (ff && ff.len >= need) { hdr = h; len = ff.len; break; }
+      }
+      if (!hdr) return null;
+      const frame = new Uint8Array(len);
+      frame.set(hdr, 0);
+      const v = new DataView(frame.buffer);
+      let o = 4 + side;
+      frame.set([0x58, 0x69, 0x6e, 0x67], o);         // 'Xing'
+      const frames = e - s;
+      const audioBytes = src.offsets[e] - src.offsets[s];
+      const totalBytes = len + audioBytes;
+      v.setUint32(o + 4, 0x7);                       // 旗標：音框數 + 位元組數 + 跳轉表
+      v.setUint32(o + 8, frames);
+      v.setUint32(o + 12, totalBytes);
+      const t0 = src.times[s], dur = src.times[e] - t0;
+      let k = s;
+      for (let i = 0; i < 100; i++) {
+        const t = t0 + (dur * i) / 100;
+        while (k < e && src.times[k] < t) k++;
+        const rel = len + (src.offsets[k] - src.offsets[s]);
+        frame[o + 16 + i] = Math.min(255, Math.floor((rel / totalBytes) * 256));
+      }
+      return frame;
+    }
+
+    // 找最接近時間 t 的音框起點
+    function nearestFrame(times, count, t) {
+      let lo = 0, hi = count;
+      while (lo < hi) {
+        const mid = (lo + hi) >> 1;
+        if (times[mid] < t) lo = mid + 1; else hi = mid;
+      }
+      if (lo > 0 && t - times[lo - 1] < times[lo] - t) lo--;
+      return lo;
+    }
+
+    function mp3Slice(src, a, b) {
+      const s = nearestFrame(src.times, src.count, a);
+      let e = nearestFrame(src.times, src.count, b);
+      if (e <= s) e = Math.min(src.count, s + 1);
+      const audio = src.u8.subarray(src.offsets[s], src.offsets[e]);
+      const xing = src.vbrHeader ? buildXingFrame(src, s, e) : null;
+      let data = audio;
+      if (xing) {
+        data = new Uint8Array(xing.length + audio.length);
+        data.set(xing, 0);
+        data.set(audio, xing.length);
+      }
+      return { data, start: src.times[s], end: src.times[e] };
+    }
+
+    async function loadMp3Source(file) {
+      if (mp3Cache && mp3Cache.file === file) return mp3Cache;
+      const u8 = new Uint8Array(await file.arrayBuffer());
+      const parsed = parseMp3(u8);
+      if (parsed.count < 10) return null; // 解析失敗，改走 WAV
+      mp3Cache = { file, u8, ...parsed };
+      return mp3Cache;
+    }
+
+    // ---- 非 MP3：解碼後輸出 16-bit WAV ----
+    async function decodeForWav(file) {
+      if (player.duration > WAV_MAX_SOURCE_SECONDS) {
+        const err = new Error('too long');
+        err.userMessage = `非 MP3 音檔超過 ${WAV_MAX_SOURCE_SECONDS / 60} 分鐘，為避免記憶體不足無法剪輯`;
+        throw err;
+      }
+      const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      if (!OAC) throw new Error('unsupported');
+      const ctx = new OAC(2, 1, WAV_EXPORT_RATE);
+      const buf = await file.arrayBuffer();
+      return new Promise((res, rej) => ctx.decodeAudioData(buf, res, rej));
+    }
+
+    function encodeWav(audio, a, b) {
+      const sr = audio.sampleRate;
+      const ch = Math.min(2, audio.numberOfChannels);
+      const s0 = Math.max(0, Math.round(a * sr));
+      const s1 = Math.min(audio.length, Math.round(b * sr));
+      const n = Math.max(0, s1 - s0);
+      const out = new ArrayBuffer(44 + n * ch * 2);
+      const v = new DataView(out);
+      const str = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+      str(0, 'RIFF'); v.setUint32(4, 36 + n * ch * 2, true); str(8, 'WAVE');
+      str(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, ch, true);
+      v.setUint32(24, sr, true); v.setUint32(28, sr * ch * 2, true); v.setUint16(32, ch * 2, true); v.setUint16(34, 16, true);
+      str(36, 'data'); v.setUint32(40, n * ch * 2, true);
+      const pcm = new Int16Array(out, 44, n * ch);
+      const chans = [];
+      for (let c = 0; c < ch; c++) chans.push(audio.getChannelData(c));
+      let o = 0;
+      for (let i = s0; i < s1; i++) {
+        for (let c = 0; c < ch; c++) {
+          const s = Math.max(-1, Math.min(1, chans[c][i]));
+          pcm[o++] = s < 0 ? s * 0x8000 : s * 0x7fff;
+        }
+      }
+      return { data: new Uint8Array(out), start: s0 / sr, end: s1 / sr };
+    }
+
+    // ---- 簡易 ZIP（不壓縮，UTF-8 檔名） ----
+    const CRC_TABLE = (() => {
+      const t = new Uint32Array(256);
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+        t[n] = c >>> 0;
+      }
+      return t;
+    })();
+
+    function crc32(u8) {
+      let c = 0xffffffff;
+      for (let i = 0; i < u8.length; i++) c = CRC_TABLE[(c ^ u8[i]) & 0xff] ^ (c >>> 8);
+      return (c ^ 0xffffffff) >>> 0;
+    }
+
+    async function makeZip(entries, onProgress) {
+      const enc = new TextEncoder();
+      const d = new Date();
+      const dosTime = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+      const dosDate = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+      const parts = [], central = [];
+      let offset = 0, cdSize = 0;
+      for (let i = 0; i < entries.length; i++) {
+        const { name, data } = entries[i];
+        const nameBytes = enc.encode(name);
+        const crc = crc32(data);
+        const size = data.length;
+        const h = new DataView(new ArrayBuffer(30));
+        h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true);
+        h.setUint16(8, 0, true); h.setUint16(10, dosTime, true); h.setUint16(12, dosDate, true);
+        h.setUint32(14, crc, true); h.setUint32(18, size, true); h.setUint32(22, size, true);
+        h.setUint16(26, nameBytes.length, true); h.setUint16(28, 0, true);
+        parts.push(h.buffer, nameBytes, data);
+        const c = new DataView(new ArrayBuffer(46));
+        c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true);
+        c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, dosTime, true);
+        c.setUint16(14, dosDate, true); c.setUint32(16, crc, true); c.setUint32(20, size, true);
+        c.setUint32(24, size, true); c.setUint16(28, nameBytes.length, true);
+        c.setUint32(42, offset, true);
+        central.push(c.buffer, nameBytes);
+        offset += 30 + nameBytes.length + size;
+        cdSize += 46 + nameBytes.length;
+        if (onProgress) onProgress(i + 1, entries.length);
+        await new Promise((r) => setTimeout(r, 0)); // 讓畫面有機會更新
+      }
+      const e = new DataView(new ArrayBuffer(22));
+      e.setUint32(0, 0x06054b50, true);
+      e.setUint16(8, entries.length, true); e.setUint16(10, entries.length, true);
+      e.setUint32(12, cdSize, true); e.setUint32(16, offset, true);
+      return new Blob([...parts, ...central, e.buffer], { type: 'application/zip' });
+    }
+
+    // ---- 依書籤計算分段 ----
+    function splitSegments(dur) {
+      const segs = [];
+      let start = 0, label = '開頭';
+      const seen = new Set();
+      for (const bm of bookmarks) {
+        if (bm.time <= MIN_CLIP_SECONDS || bm.time >= dur - MIN_CLIP_SECONDS || seen.has(bm.time)) continue;
+        seen.add(bm.time);
+        segs.push({ a: start, b: bm.time, label });
+        start = bm.time;
+        label = bm.note;
+      }
+      // 第一個書籤若在開頭附近，就沿用它的備註當第一段名稱
+      const first = bookmarks.find((bm) => bm.time <= MIN_CLIP_SECONDS);
+      if (first && segs.length === 0) label = first.note;
+      else if (first && segs.length) segs[0].label = first.note;
+      segs.push({ a: start, b: dur, label });
+      return segs.filter((s) => s.b - s.a >= MIN_CLIP_SECONDS);
+    }
+
+    const fileTime = (t) => formatTime(Math.round(t * 10) / 10).replace(/:/g, '-');
+
+    // 取得片段資料：MP3 直接切音框，其他格式解碼後輸出 WAV
+    async function prepareCutter(file) {
+      if (isMp3File(file)) {
+        const src = await loadMp3Source(file);
+        if (src) return { ext: 'mp3', type: 'audio/mpeg', cut: (a, b) => mp3Slice(src, a, b) };
+      }
+      const audio = await decodeForWav(file);
+      return { ext: 'wav', type: 'audio/wav', cut: (a, b) => encodeWav(audio, a, b) };
+    }
+
+    function bookmarksInRange(start, end) {
+      return bookmarks
+        .filter((bm) => bm.time >= start && bm.time < end)
+        .map((bm) => ({ time: Math.max(0, Math.round((bm.time - start) * 1000) / 1000), note: bm.note }));
+    }
+
+    async function exportClip() {
+      if (editBusy) return;
+      const r = selRange();
+      if (!r) { showToast('請先設定剪輯範圍', '⚠️'); return; }
+      const file = currentFile;
+      setBusy(true, '⏳ 處理中…');
+      try {
+        const cutter = await prepareCutter(file);
+        if (file !== currentFile) return;
+        const clip = cutter.cut(r.a, r.b);
+        const base = `${safeName(currentAudioName, 60)}_${fileTime(clip.start)}~${fileTime(clip.end)}`;
+        downloadBlob(new Blob([clip.data], { type: cutter.type }), `${base}.${cutter.ext}`);
+
+        const inRange = bookmarksInRange(clip.start, clip.end);
+        if ($('clipWithBm').checked && inRange.length) {
+          const json = { audioFile: base, source: currentAudioName, sourceStart: clip.start, sourceEnd: clip.end, exportedAt: new Date().toISOString(), bookmarks: inRange };
+          setTimeout(() => downloadBlob(new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' }), `${base}_書籤.json`), 400);
+        }
+        const size = (clip.data.length / 1024 / 1024).toFixed(1);
+        setBusy(false, `✅ 已匯出 ${base}.${cutter.ext}（${formatTime(clip.end - clip.start)}，${size} MB）`);
+        showToast('已匯出片段', '✂️');
+      } catch (err) {
+        setBusy(false, `❌ ${err.userMessage || '無法處理此音檔'}`);
+        showToast(err.userMessage || '剪輯失敗', '❌');
+      }
+    }
+
+    async function splitByBookmarks() {
+      if (editBusy) return;
+      if (!hasAudio()) return;
+      if (bookmarks.length === 0) { showToast('請先新增書籤當作切點', '⚠️'); return; }
+      const file = currentFile;
+      const segs = splitSegments(player.duration);
+      if (segs.length < 2) { showToast('書籤位置無法切出兩段以上', '⚠️'); return; }
+      setBusy(true, '⏳ 讀取音檔…');
+      try {
+        const cutter = await prepareCutter(file);
+        if (file !== currentFile) return;
+        const entries = [];
+        const manifest = [];
+        for (let i = 0; i < segs.length; i++) {
+          editStatus.textContent = `⏳ 切割中 ${i + 1} / ${segs.length}…`;
+          const clip = cutter.cut(segs[i].a, segs[i].b);
+          const name = `${String(i + 1).padStart(2, '0')}_${safeName(segs[i].label, 50)}.${cutter.ext}`;
+          entries.push({ name, data: clip.data });
+          manifest.push({ file: name, start: clip.start, end: clip.end, note: segs[i].label });
+          await new Promise((r) => setTimeout(r, 0));
+        }
+        entries.push({
+          name: '分割清單.json',
+          data: new TextEncoder().encode(JSON.stringify({ source: currentAudioName, exportedAt: new Date().toISOString(), segments: manifest }, null, 2))
+        });
+        const zip = await makeZip(entries, (n, total) => { editStatus.textContent = `⏳ 打包中 ${n} / ${total}…`; });
+        if (file !== currentFile) return;
+        downloadBlob(zip, `${safeName(currentAudioName, 60)}_分割.zip`);
+        setBusy(false, `✅ 已分割成 ${segs.length} 段並下載 ZIP（${(zip.size / 1024 / 1024).toFixed(1)} MB）`);
+        showToast(`已分割成 ${segs.length} 段`, '📦');
+      } catch (err) {
+        setBusy(false, `❌ ${err.userMessage || '無法處理此音檔'}`);
+        showToast(err.userMessage || '分割失敗', '❌');
+      } finally {
+        if (editBusy) setBusy(false);
+      }
+    }
+
+    player.addEventListener('loadedmetadata', updateEditPanel);
+    player.addEventListener('durationchange', updateEditPanel);
 
     renderBookmarks();
     showRestoreHint();
